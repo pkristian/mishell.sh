@@ -37,8 +37,9 @@ echo "### Executing deployer:"
 echo "------------------------"
 
 cd "$script_dir"
-sh ../run.sh testProfile
 
-sh ../run.sh testProfile
+. ../mishell testProfile
 
-exit
+. ../mishell testProfile
+
+exit 0

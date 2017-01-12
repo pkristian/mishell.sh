@@ -1,11 +1,12 @@
 #!/bin/bash
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+original_dir="$( pwd )"
 cd "$script_dir"
 
 
 echo "#################################"
-echo "### Deployer by pkristian"
-echo "### version 0.81"
+echo "### mishell by pkristian"
+echo "### version 0.82"
 echo "#################################"
 
 profile_directory=
@@ -15,7 +16,7 @@ log_file=
 
 
 profile_name=$1
-profile_file=$profile_directory$profile_name'.sh'
+profile_file="$profile_directory""$profile_name"'.sh'
 
 current_user=`whoami`
 echo "Profile:" $profile_name
@@ -46,7 +47,7 @@ echo "> repo_branch   = "$repo_branch
 if [ $current_user != $required_user ]; then
 	echo "ERROR: Mismatching user"
 	echo "Required: " $required_user
-	echo "Current:  " $actual_user
+	echo "Current:  " $current_user
 	exit
 fi
 
@@ -65,30 +66,28 @@ echo "CurrentBranch:   " "$current_branch"
 if [ $current_branch == $repo_branch ]; then
 	echo ""
 	echo "### SKIPPING ###"
-	exit
+else
+	echo "Required branch: " $repo_branch
+
+	##do stuff
+	echo "# Executing beforeDeploy:"
+	beforeDeploy
+
+	echo "# Executing deploy:"
+	git checkout -f $repo_branch
+
+	echo "# Executing afterDeploy:"
+	afterDeploy
+
+	cd "$script_dir"
+	if [ ! -f "$log_file" ]; then
+	echo "$log_file"
+		touch "$log_file"
+	fi
+	now=`date +"%Y-%m-%d %H:%M:%S"`
+	echo $now "Deployed "$profile_name$'\r' > "$log_file"
+	echo "### DONE ###"
 fi
-
-echo "Required branch: " $repo_branch
-
-##do stuff
-echo "# Executing beforeDeploy:"
-beforeDeploy
-
-echo "# Executing deploy:"
-git checkout -f $repo_branch
-
-echo "# Executing afterDeploy:"
-afterDeploy
-
-cd "$script_dir"
-if [ ! -f $log_file ]; then
-echo $log_file
-	touch $log_file
-fi
-now=`date +"%Y-%m-%d %H:%M:%S"`
-echo $now "Deployed "$profile_name$'\r' > $log_file
-
-
-echo "### DONE ###"
 echo ""
-exit
+cd "$original_dir"
+return 0

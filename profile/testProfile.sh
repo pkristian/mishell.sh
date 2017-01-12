@@ -1,3 +1,4 @@
+#!/bin/bash
 #profile file
 
 required_user=`whoami`
