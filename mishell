@@ -32,19 +32,21 @@ fi
 #define variables
 required_user=
 repo_dir=
+repo_remote=
 repo_branch=
 
 #load profile file
 echo "Loading profile file:" $profile_file
 . $profile_file
 
-echo "> required_user = "$required_user
-echo "> repo_dir      = "$repo_dir
-echo "> repo_branch   = "$repo_branch
+echo "> required_user = $required_user"
+echo "> repo_dir      = $repo_dir"
+echo "> repo_remote   = $repo_remote"
+echo "> repo_branch   = $repo_branch"
 
 #check right user
 
-if [ $current_user != $required_user ]; then
+if [ "$current_user" != "$required_user" ]; then
 	echo "ERROR: Mismatching user"
 	echo "Required: " $required_user
 	echo "Current:  " $current_user
@@ -53,39 +55,47 @@ fi
 
 #changing directory
 cd $repo_dir
-git fetch --all
 
-#current branch
-current_branch=`git branch`
-#current_branch='* (detached from origin/m.com)'
-current_branch=`echo "$current_branch" | grep \*`
-current_branch=`echo "$current_branch" | awk '{print $NF}'`
-current_branch=`echo "$current_branch" | tr -d ')'`
+#fetching
+echo 'Fetching...'
+if [ -z "$repo_remote" ]; then
+	echo "local branch"
+	branch="$repo_branch"
+else
+	git fetch "$repo_remote" "$repo_branch"
+	branch=$repo_remote"/"$repo_branch
+fi
+echo "Branch: $branch"
+#current commit
+current_commit=`git rev-parse HEAD`
+echo "Current commit: " "$current_commit"
+#target commit
+target_commit=`git show-ref $repo_branch | awk '{print $1}'`
+echo "Target commit:" "$target_commit"
 
-echo "CurrentBranch:   " "$current_branch"
-if [ $current_branch == $repo_branch ]; then
+if [ $current_commit == $target_commit ]; then
 	echo ""
 	echo "### SKIPPING ###"
 else
-	echo "Required branch: " $repo_branch
+	echo "Target branch: " $repo_branch
 
 	##do stuff
 	echo "# Executing beforeDeploy:"
 	beforeDeploy
 
-	echo "# Executing deploy:"
-	git checkout -f $repo_branch
+	echo "# Deploying..."
+	git checkout -f "$target_commit"
 
 	echo "# Executing afterDeploy:"
 	afterDeploy
 
 	cd "$script_dir"
 	if [ ! -f "$log_file" ]; then
-	echo "$log_file"
+		echo "$log_file"
 		touch "$log_file"
 	fi
 	now=`date +"%Y-%m-%d %H:%M:%S"`
-	echo $now "Deployed "$profile_name$'\r' > "$log_file"
+	echo $now "Deployed "$profile_name$'\r' >> "$log_file"
 	echo "### DONE ###"
 fi
 echo ""
