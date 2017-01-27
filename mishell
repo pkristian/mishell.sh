@@ -70,7 +70,7 @@ echo "Branch: $branch"
 current_commit=`git rev-parse HEAD`
 echo "Current commit: " "$current_commit"
 #target commit
-target_commit=`git show-ref $repo_branch | awk '{print $1}'`
+target_commit=`git show-ref $branch | awk '{print $1}'`
 echo "Target commit:" "$target_commit"
 
 if [ $current_commit == $target_commit ]; then
