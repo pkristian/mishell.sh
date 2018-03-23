@@ -1,0 +1,6 @@
+remote=origin
+branch=master
+before=
+after=
+context=.
+print_vars=1
