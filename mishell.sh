@@ -10,6 +10,8 @@ after=""
 context="${@: -1}"
 
 print_vars=0
+verbose=0
+help=0
 
 for ((i = 1; i < $#; i++ )); do
 	case ${!i} in
@@ -32,6 +34,18 @@ for ((i = 1; i < $#; i++ )); do
 		"--print-vars")
 		 	print_vars=1
 		 	;;
+		 "-v")
+			verbose=1
+			;;
+		"-vv")
+			verbose=2
+			;;
+		"-vvv")
+			verbose=3
+			;;
+		"--help")
+		    help=1
+			;;
 		*)
 			echo "unknown argument '${!i}'" 1>&2
 			exit 1
@@ -47,8 +61,18 @@ then
 	echo "after=$after"
 	echo "context=$context"
 	echo "print_vars=$print_vars"
+	echo "verbose=$verbose"
 	exit 0
 fi
+
+if [ $help -ne 0 ]
+then
+	cat <<'TXT'
+Usage: mishell.sh [OPTION]... CONTEXT
+TXT
+	exit 0
+fi
+
 
 remoteBranch="$remote/$branch"
 

@@ -4,3 +4,4 @@ before=echo "ff"
 after=tee tree
 context=blah
 print_vars=1
+verbose=2

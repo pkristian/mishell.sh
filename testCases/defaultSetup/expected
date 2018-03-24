@@ -4,3 +4,4 @@ before=
 after=
 context=.
 print_vars=1
+verbose=0
