@@ -15,7 +15,7 @@ do
 	echo -ne "\e[96m";
 	echo -ne "### ";
 	echo -ne "\e[0m";
-	echo -ne "$testCase";
+	echo -ne "${testCase::-1}";
 
 	expected="$(cat $testCase/expected)"
 
