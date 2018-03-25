@@ -26,18 +26,14 @@ Just put it in cron and forget about it.
 ## Installation
 Just download `mishell.sh` file to your machine.
 
-If you are in Debian:
+If you are in Debian you can install latest version by:
 ```bash
 sudo curl -L \
   https://raw.githubusercontent.com/pkristian/mishell.sh/master/mishell.sh \
   -o /usr/local/bin/mishell.sh
 sudo chmod +x /usr/local/bin/mishell.sh
 bash mishell.sh --version .
-
-    
-
 ```
-
 
 For downloading specific version, go to releases.
 
