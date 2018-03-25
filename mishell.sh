@@ -2,6 +2,8 @@
 
 set -e
 
+VERSION=v0.90
+
 #variables
 remote="origin"
 branch="master"
@@ -9,8 +11,9 @@ before=""
 after=""
 context="${@: -1}"
 
-print_vars=0
-verbose=0
+printVars=0
+printVersion=0
+verbosity=1
 help=0
 
 for ((i = 1; i < $#; i++ )); do
@@ -32,16 +35,18 @@ for ((i = 1; i < $#; i++ )); do
 			after=${!i}
 			;;
 		"--print-vars")
-		 	print_vars=1
+		 	printVars=1
 		 	;;
-		 "-v")
-			verbose=1
+		 "--version")
+		 	printVersion=1
+		 	;;
+		"-q"\
+		|"--quiet")
+			verbosity=0
 			;;
-		"-vv")
-			verbose=2
-			;;
-		"-vvv")
-			verbose=3
+		"-v"\
+		|"--verbose")
+			verbosity=2
 			;;
 		"--help")
 		    help=1
@@ -53,15 +58,25 @@ for ((i = 1; i < $#; i++ )); do
 done
 
 
-if [ $print_vars -ne 0 ]
+if [ $printVersion -ne 0 ]
+then
+	echo "mishell.sh $VERSION"
+	cat <<'TXT'
+Licence: MIT
+More at https://github.com/pkristian/mishell.sh
+Written by Patrik Kristian
+TXT
+	exit 0
+fi
+if [ $printVars -ne 0 ]
 then
 	echo "remote=$remote"
 	echo "branch=$branch"
 	echo "before=$before"
 	echo "after=$after"
 	echo "context=$context"
-	echo "print_vars=$print_vars"
-	echo "verbose=$verbose"
+	echo "print_vars=$printVars"
+	echo "verbosity=$verbosity"
 	exit 0
 fi
 
@@ -69,6 +84,25 @@ if [ $help -ne 0 ]
 then
 	cat <<'TXT'
 Usage: mishell.sh [OPTION]... CONTEXT
+
+CONTEXT is directory containing git repository
+options:
+  --remote string     Remote name
+                        (default "origin")
+  --branch string     Remote branch name
+                        (default "master")
+  --before string     Command executed before deploy
+                        (default "")
+  --after string      Command executed after deploy
+                        (default "")
+  --print-vars        Show variables and exit
+  --version           Show version info and exit
+  -q, --quiet         Less verbose
+  -v, --verbose       More verbose
+  --help              Show this help
+
+For any additional info visit:
+    https://github.com/pkristian/mishell.sh
 TXT
 	exit 0
 fi
