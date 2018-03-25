@@ -1,0 +1,42 @@
+Starting...
+
+$> cd ../testRepo
+
+Checking if git is installed...
+$> git --version
+git version 2.16.2.windows.1
+Fetching origin/demo_delta ...
+$> git fetch origin demo_delta
+From https://github.com/pkristian/mishell.sh
+ * branch            demo_delta -> FETCH_HEAD
+ * [new branch]      demo_delta -> origin/demo_delta
+
+Current commit: 2812266bf5b4f43e4f22128d97f95b026edb271b
+Target commit:  2b910423a14dc0d22ee9c8316943d342d40df759
+
+Target commit info:
+commit 2b910423a14dc0d22ee9c8316943d342d40df759
+Author: Patrik Kristian <patrik@pkristian.cz>
+Date:   Sat Mar 24 00:46:03 2018 +0100
+
+    delta
+
+Deploying...
+Before deploy:
+$> touch charlie
+
+
+Checkout:
+$> git checkout -f 2b910423a14dc0d22ee9c8316943d342d40df759
+Previous HEAD position was 2812266 alpha
+HEAD is now at 2b91042 delta
+
+After deploy:
+$> rm alpha
+
+
+Done
+
+beta
+charlie
+delta

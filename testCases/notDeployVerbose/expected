@@ -1,0 +1,19 @@
+Starting...
+
+$> cd ../testRepo
+
+Checking if git is installed...
+$> git --version
+git version 2.16.2.windows.1
+Fetching origin/demo_alpha ...
+$> git fetch origin demo_alpha
+From https://github.com/pkristian/mishell.sh
+ * branch            demo_alpha -> FETCH_HEAD
+
+Current commit: 2812266bf5b4f43e4f22128d97f95b026edb271b
+Target commit:  2812266bf5b4f43e4f22128d97f95b026edb271b
+
+Commits are same
+Exiting
+
+alpha

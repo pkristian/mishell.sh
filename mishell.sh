@@ -57,7 +57,7 @@ for ((i = 1; i < $#; i++ )); do
 	esac
 done
 
-
+# print version
 if [ $printVersion -ne 0 ]
 then
 	echo "mishell.sh $VERSION"
@@ -68,6 +68,7 @@ Written by Patrik Kristian
 TXT
 	exit 0
 fi
+#print vars
 if [ $printVars -ne 0 ]
 then
 	echo "remote=$remote"
@@ -80,6 +81,7 @@ then
 	exit 0
 fi
 
+# print help
 if [ $help -ne 0 ]
 then
 	cat <<'TXT'
@@ -97,7 +99,7 @@ options:
                         (default "")
   --print-vars        Show variables and exit
   --version           Show version info and exit
-  -q, --quiet         Less verbose
+  -q, --quiet         Do not print anything
   -v, --verbose       More verbose
   --help              Show this help
 
@@ -107,42 +109,96 @@ TXT
 	exit 0
 fi
 
+# functions
+function verbose()
+{
+	if [ $verbosity -ge "$1" ]
+	then
+		echo "$2";
+	fi
+}
 
+
+# magic itself
+################
 remoteBranch="$remote/$branch"
 
-#changing directory
-if [ ! -d "$context" ]; then
-	echo "directory does not exists: '$context'" 1>&2
-	exit 2
-fi
+verbose 2 "Starting..."
+verbose 2 ""
 
-cd $context
+
+#changing directory
+cmd="cd $context"
+	verbose 2 "$> $cmd"
+	result="$($cmd)"
+	verbose 2 "$result"
 
 #check if is git installed
-: $(git --version)
+verbose 2 "Checking if git is installed..."
+cmd="git --version"
+	verbose 2 "$> $cmd"
+	result="$($cmd)"
+	verbose 2 "$result"
 
 # fetching
 
+verbose 2 "Fetching $remote/$branch ...";
+cmd="git fetch $remote $branch"
+	verbose 2 "$> $cmd"
+	result="$($cmd 2>&1)"
+	verbose 2 "$result"
 
-: "$(git fetch "$remote" "$branch" 2>&1)"
-
+verbose 2 ""
 
 #current commit
-currentCommit=`git rev-parse HEAD`
-: echo "Current commit: " "$currentCommit"
+currentCommit="$(git rev-parse HEAD)"
+verbose 2 "Current commit: $currentCommit"
 
 #target commit
 targetCommit=`git show-ref $branch | awk '{print $1}'`
-: echo "Target commit:" "$targetCommit"
+verbose 2 "Target commit:  $targetCommit"
+verbose 2 ""
 
 if [ "$currentCommit" == "$targetCommit" ]; then
+	verbose 2 "Commits are same"
+	verbose 2 "Exiting"
+	verbose 2 ""
 	exit 0
 fi
 
-#deploy
-: "$(eval $before 2>&1)"
-: "$(git checkout -f $targetCommit 2>&1)"
-: "$(eval $after 2>&1)"
+targetCommitInfo="$(git log $targetCommit -n 1)"
+verbose 1 "Target commit info:"
+verbose 1 "$targetCommitInfo"
 
+
+verbose 1 ""
+verbose 1 "Deploying..."
+#deploy stuff
+
+#before
+verbose 2 "Before deploy:"
+cmd="$before"
+	verbose 2 "$> $cmd"
+	result="$($cmd)"
+	verbose 2 "$result"
+	verbose 2 ""
+
+# checkout
+verbose 2 "Checkout:"
+cmd="git checkout -f $targetCommit"
+	verbose 2 "$> $cmd"
+	result="$($cmd 2>&1)"
+	verbose 2 "$result"
+	verbose 2 ""
+
+verbose 2 "After deploy:"
+cmd="$after"
+	verbose 2 "$> $cmd"
+	result="$($cmd)"
+	verbose 2 "$result"
+	verbose 2 ""
+
+verbose 1 "Done"
+verbose 1 ""
 
 exit 0
