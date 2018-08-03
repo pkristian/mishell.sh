@@ -4,6 +4,8 @@ set -e
 
 cd "$(dirname "$0")"
 
+bash ./createTestRemote.sh
+
 countTests=0
 countFailed=0
 
@@ -12,14 +14,17 @@ do
 {
 	countTests=$((countTests + 1))
 
+	bash ./createTestRepo.sh > /dev/null 2>&1
+
 	echo -ne "\e[96m";
 	echo -ne "### ";
 	echo -ne "\e[0m";
 	echo -ne "${testCase::-1}";
 
+
 	expected="$(cat $testCase/expected)"
 
-	actual="$(bash $testCase/command.sh)"
+	actual="$(cd ../testRepo && bash ../testCases/$testCase/command.sh)"
 
 	if [ "$expected" == "$actual" ]
 	then

@@ -78,3 +78,10 @@ For any additional info visit:
 
 ## Testing
 If you wish to alter code, you can run tests by `bash testCases/testAll.sh`
+
+- New tests are added into separate directories in `testCases/`
+- Each test consists form files `command.sh` and `expected`
+- Before all tests is created `testRemote/` with `testCases/createTestRemote.sh` (if does not exists)
+- Before every test is recreated `testRepo/` with `testCases/createTestRepo.sh`
+- Tests itself are run in direcotry `testRepo/`
+
