@@ -1,0 +1,20 @@
+Usage: mishell.sh [OPTION]... CONTEXT
+
+CONTEXT is directory containing git repository
+options:
+  --remote string     Remote name
+                        (default "origin")
+  --branch string     Remote branch name
+                        (default "master")
+  --before string     Command executed before deploy
+                        (default "")
+  --after string      Command executed after deploy
+                        (default "")
+  --print-vars        Show variables and exit
+  --version           Show version info and exit
+  -q, --quiet         Do not print anything
+  -v, --verbose       More verbose
+  --help              Show this help
+
+For any additional info visit:
+    https://github.com/pkristian/mishell.sh
